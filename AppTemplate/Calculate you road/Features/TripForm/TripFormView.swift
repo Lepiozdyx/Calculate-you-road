@@ -42,6 +42,7 @@ struct TripFormView: View {
     @State private var entertainment = ""
     @State private var tolls = ""
     @State private var other = ""
+    @State private var emergencyBufferPercent = 0
     @State private var isCalculatingDistance = false
     @State private var showMapError = false
     @State private var mapErrorMessage = ""
@@ -63,7 +64,8 @@ struct TripFormView: View {
             tolls: Double(tolls) ?? 0,
             other: Double(other) ?? 0,
             days: days,
-            peopleCount: peopleCount
+            peopleCount: peopleCount,
+            emergencyBufferPercent: emergencyBufferPercent
         )
     }
 
@@ -183,7 +185,40 @@ struct TripFormView: View {
                 .padding(12)
                 .background(AppTheme.gold.opacity(0.12))
                 .clipShape(RoundedRectangle(cornerRadius: 12))
+
+                emergencyBufferSlider
             }
+        }
+    }
+
+    private var emergencyBufferSlider: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("Emergency Buffer")
+                    .foregroundStyle(.white)
+                Spacer()
+                Text("\(emergencyBufferPercent)%")
+                    .foregroundStyle(AppTheme.gold)
+                    .fontWeight(.semibold)
+            }
+
+            Slider(
+                value: Binding(
+                    get: { Double(emergencyBufferPercent) },
+                    set: { emergencyBufferPercent = Int($0.rounded()) }
+                ),
+                in: 0...20,
+                step: 1
+            )
+            .tint(AppTheme.gold)
+
+            HStack {
+                Text("0%")
+                Spacer()
+                Text("20%")
+            }
+            .font(.caption)
+            .foregroundStyle(AppTheme.secondaryText)
         }
     }
 
@@ -324,6 +359,7 @@ struct TripFormView: View {
             entertainment = trip.entertainment > 0 ? String(format: "%.0f", trip.entertainment) : ""
             tolls = trip.tolls > 0 ? String(format: "%.0f", trip.tolls) : ""
             other = trip.other > 0 ? String(format: "%.0f", trip.other) : ""
+            emergencyBufferPercent = trip.emergencyBufferPercent
 
             if let car = cars.first(where: { $0.name == trip.carName }) {
                 selectedCarID = car.persistentModelID
@@ -364,7 +400,8 @@ struct TripFormView: View {
                 accommodation: Double(accommodation) ?? 0,
                 entertainment: Double(entertainment) ?? 0,
                 tolls: Double(tolls) ?? 0,
-                other: Double(other) ?? 0
+                other: Double(other) ?? 0,
+                emergencyBufferPercent: emergencyBufferPercent
             )
             modelContext.insert(trip)
 
@@ -384,6 +421,7 @@ struct TripFormView: View {
             trip.entertainment = Double(entertainment) ?? 0
             trip.tolls = Double(tolls) ?? 0
             trip.other = Double(other) ?? 0
+            trip.emergencyBufferPercent = emergencyBufferPercent
         }
 
         try? modelContext.save()

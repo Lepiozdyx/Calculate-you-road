@@ -136,14 +136,24 @@ struct TripDetailsView: View {
 
     private var totalCard: some View {
         AppCard {
-            HStack {
-                Text("Total Trip Cost")
-                    .font(.headline)
-                    .foregroundStyle(.white)
-                Spacer()
-                Text(CurrencyFormatter.dollarsShort(breakdown.total))
-                    .font(.title.weight(.bold))
-                    .foregroundStyle(AppTheme.gold)
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text("Emergency Buffer")
+                        .foregroundStyle(AppTheme.secondaryText)
+                    Spacer()
+                    Text("\(trip.emergencyBufferPercent)%")
+                        .foregroundStyle(.white)
+                }
+
+                HStack {
+                    Text("Total Trip Cost")
+                        .font(.headline)
+                        .foregroundStyle(.white)
+                    Spacer()
+                    Text(CurrencyFormatter.dollarsShort(breakdown.total))
+                        .font(.title.weight(.bold))
+                        .foregroundStyle(AppTheme.gold)
+                }
             }
         }
     }

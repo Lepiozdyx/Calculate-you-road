@@ -27,6 +27,7 @@ final class Trip {
     var entertainment: Double
     var tolls: Double
     var other: Double
+    var emergencyBufferPercent: Int = 0
 
     init(
         origin: String = "",
@@ -43,7 +44,8 @@ final class Trip {
         accommodation: Double = 0,
         entertainment: Double = 0,
         tolls: Double = 0,
-        other: Double = 0
+        other: Double = 0,
+        emergencyBufferPercent: Int = 0
     ) {
         self.origin = origin
         self.destination = destination
@@ -60,6 +62,7 @@ final class Trip {
         self.entertainment = entertainment
         self.tolls = tolls
         self.other = other
+        self.emergencyBufferPercent = emergencyBufferPercent
     }
 
     var status: TripStatus {

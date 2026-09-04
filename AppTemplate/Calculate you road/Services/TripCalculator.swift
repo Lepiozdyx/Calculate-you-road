@@ -21,12 +21,15 @@ enum TripCalculator {
         tolls: Double,
         other: Double,
         days: Int,
-        peopleCount: Int
+        peopleCount: Int,
+        emergencyBufferPercent: Int = 0
     ) -> TripBreakdown {
         let effectiveKm = distanceKm * (isRoundTrip ? 2 : 1)
         let liters = effectiveKm * consumptionPer100km / 100
         let fuelCost = liters * fuelPricePerLiter
-        let total = fuelCost + food + accommodation + entertainment + tolls + other
+        let subtotal = fuelCost + food + accommodation + entertainment + tolls + other
+        let clampedBuffer = min(max(emergencyBufferPercent, 0), 20)
+        let total = subtotal * (1 + Double(clampedBuffer) / 100)
         let perPerson = total / Double(max(peopleCount, 1))
         let perDay = total / Double(max(days, 1))
 
@@ -52,7 +55,8 @@ enum TripCalculator {
             tolls: trip.tolls,
             other: trip.other,
             days: trip.days,
-            peopleCount: trip.peopleCount
+            peopleCount: trip.peopleCount,
+            emergencyBufferPercent: trip.emergencyBufferPercent
         )
     }
 }
